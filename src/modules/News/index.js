@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { Input, Button, DatePicker } from "antd";
+import { Input, Button, DatePicker, message } from "antd";
 import moment from "moment";
 import { getNews } from "./services/api";
-import { NewsCard } from "./NewsCard";
+import { NewsList } from "./NewsList";
 
 const dateFormat = "YYYY-MM-DD";
 const { RangePicker } = DatePicker;
@@ -13,11 +13,13 @@ export const News = () => {
     topic: "",
     date: null,
   });
-
   const [newsArticles, setNewsArticle] = useState([]);
+  const [isNewsArticleLoading, setIsNewsArticleLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchResults = async () => {
     let response = [];
+    setIsNewsArticleLoading(true);
     try {
       response = await getNews(
         query.topic,
@@ -25,7 +27,11 @@ export const News = () => {
           ? `from=${query.date.from}&to=${query.date.from}`
           : ""
       );
-    } catch (e) {}
+    } catch (e) {
+      setErrorMessage(e.response.data.message);
+    } finally {
+      setIsNewsArticleLoading(false);
+    }
     setNewsArticle(response.data.articles);
   };
 
@@ -61,11 +67,11 @@ export const News = () => {
           Search
         </Button>
       </SearchContainer>
-      <CardContainer>
-        {newsArticles.map((article, index) => (
-          <NewsCard {...article} key={index} />
-        ))}
-      </CardContainer>
+      <NewsList
+        newsArticles={newsArticles}
+        isNewsArticleLoading={isNewsArticleLoading}
+        errorMessage={errorMessage}
+      />
     </NewsContainer>
   );
 };
@@ -76,13 +82,6 @@ const NewsContainer = styled.div`
 `;
 const SearchContainer = styled.div`
   display: flex;
-  width: 600px;
-  align-self: center;
-`;
-const CardContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   width: 600px;
   align-self: center;
 `;

@@ -6,7 +6,7 @@ export const NewsCard = ({ content, title, urlToImage }) => {
     <CardContainer>
       <h1>{title}</h1>
       <p>{content}</p>
-      <img src={urlToImage} style={{width: "100%"}}></img>
+      <img src={urlToImage} style={{ width: "100%" }} alt="news"></img>
     </CardContainer>
   );
 };
