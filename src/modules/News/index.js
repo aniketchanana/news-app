@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Input, Button, DatePicker, message } from "antd";
+import { Input, Button, DatePicker } from "antd";
 import moment from "moment";
 import { getNews } from "./services/api";
 import { NewsList } from "./NewsList";
